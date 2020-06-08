@@ -83,6 +83,8 @@ var UIController = (function () {
     inputDescription: '.add__description',
     inputValue: '.add__value',
     inputButton: '.add__btn',
+    incomeContainer: '.income__list',
+    expenseContainer: '.expenses__list',
   };
 
   // public function used in controller, always retured as object
@@ -101,6 +103,39 @@ var UIController = (function () {
     // return private object from public function
     getDOMStrings: function () {
       return DOMStrings;
+    },
+
+    // add newly created item to DOM
+    /**
+     * @param obj - newly created item ctrlAddItem function
+     * @param type - inc or exp
+     */
+    addListItem: function (obj, type) {
+      var html, newHtml, element;
+
+      // create HTML string with placeholder text
+      if (type === 'inc') {
+        // select appropriate place in DOM for income i.e income__list class
+        element = DOMStrings.incomeContainer;
+        // create HTML string with placeholder text for income
+        html =
+          '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      } else if (type === 'exp') {
+        // select appropriate place in DOM for expense i.e expenses__list class
+        element = DOMStrings.expenseContainer;
+        // create HTML string with placeholder text for expense
+        html =
+          '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      }
+
+      // replace placeholder text with actual data
+      newHtml = html.replace('%id%', obj.id);
+      newHtml = newHtml.replace('%description%', obj.description);
+      newHtml = newHtml.replace('%value%', obj.value);
+
+      // insert HTMLinto the DOM
+      // beforeend => insert as child of container
+      document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
     },
   };
 })();
@@ -142,7 +177,9 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     // add item to budget controller
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+
     // add new item to UI
+    UICtrl.addListItem(newItem, input.type);
     // calculate budget
     // display budget on UI
   };
