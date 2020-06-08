@@ -137,6 +137,31 @@ var UIController = (function () {
       // beforeend => insert as child of container
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
     },
+
+    // clearing input fields when click on add btn OR ENTER key
+    clearFields: function () {
+      var fields, fieldArr;
+
+      // querySelectorAll => return node list
+      fields = document.querySelectorAll(
+        DOMStrings.inputDescription + ', ' + DOMStrings.inputValue
+      );
+
+      // convert node list into array
+      fieldArr = Array.prototype.slice.call(fields);
+      /**
+       * forEach gives 3 things inside its callback function
+       * current => currentElement
+       * index => index from 0 to Array.length - 1
+       * array => full array
+       */
+      fieldArr.forEach(function (current, index, array) {
+        current.value = ''; // clear description ans value here
+      });
+
+      // after clear first field is focused
+      fieldArr[0].focus();
+    },
   };
 })();
 
@@ -180,6 +205,10 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     // add new item to UI
     UICtrl.addListItem(newItem, input.type);
+
+    // clear the input fields
+    UICtrl.clearFields();
+
     // calculate budget
     // display budget on UI
   };
