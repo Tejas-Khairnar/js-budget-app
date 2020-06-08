@@ -20,7 +20,33 @@ var testModule = (function () {
 */
 
 // independant budget controller module, it is IIFE
-var budgetController = (function () {})();
+var budgetController = (function () {
+  // custom data model for expense using function constructor
+  var Expense = function (id, description, value) {
+    this.id = id;
+    this.description = description;
+    this.value = value;
+  };
+
+  // custom data model for income using function constructor
+  var Income = function (id, description, value) {
+    this.id = id;
+    this.description = description;
+    this.value = value;
+  };
+
+  // budget app data structure
+  var data = {
+    allItems: {
+      exp: [],
+      inc: [],
+    },
+    totals: {
+      exp: 0,
+      inc: 0,
+    },
+  };
+})();
 
 // independant user interface module, it is IIFE
 var UIController = (function () {
