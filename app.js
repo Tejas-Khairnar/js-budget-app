@@ -96,7 +96,8 @@ var UIController = (function () {
         // select description from DOM
         description: document.querySelector(DOMStrings.inputDescription).value,
         // select value from DOM
-        value: document.querySelector(DOMStrings.inputValue).value,
+        // parseFloat => convert string to number
+        value: parseFloat(document.querySelector(DOMStrings.inputValue).value),
       };
     },
 
@@ -193,6 +194,13 @@ var controller = (function (budgetCtrl, UICtrl) {
     });
   };
 
+  // update budget
+  var updateBudget = function () {
+    // calculate budget
+    // return budget
+    // display budget on UI
+  };
+
   // shared method called in both event listener below
   var ctrlAddItem = function () {
     var input, newItem;
@@ -200,17 +208,20 @@ var controller = (function (budgetCtrl, UICtrl) {
     // get field input data, called function from UIController
     input = UICtrl.getInput();
 
-    // add item to budget controller
-    newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+    // check for empty fields
+    if (input.description !== '' && !isNaN(input.value) && input.value > 0) {
+      // add item to budget controller
+      newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-    // add new item to UI
-    UICtrl.addListItem(newItem, input.type);
+      // add new item to UI
+      UICtrl.addListItem(newItem, input.type);
 
-    // clear the input fields
-    UICtrl.clearFields();
+      // clear the input fields
+      UICtrl.clearFields();
 
-    // calculate budget
-    // display budget on UI
+      // calculate and update budget
+      updateBudget();
+    }
   };
 
   // public initialization function, always return as object outside IIFE
