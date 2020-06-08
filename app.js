@@ -23,7 +23,34 @@ var testModule = (function () {
 var budgetController = (function () {})();
 
 // independant user interface module, it is IIFE
-var UIController = (function () {})();
+var UIController = (function () {
+  // private strings object
+  var DOMStrings = {
+    inputType: '.add__type',
+    inputDescription: '.add__description',
+    inputValue: '.add__value',
+    inputButton: '.add__btn',
+  };
+
+  // public function used in controller, always retured as object
+  return {
+    getInput: function () {
+      return {
+        // select type inc(+) / exp(-) from DOM
+        type: document.querySelector(DOMStrings.inputType).value,
+        // select description from DOM
+        description: document.querySelector(DOMStrings.inputDescription).value,
+        // select value from DOM
+        value: document.querySelector(DOMStrings.inputValue).value,
+      };
+    },
+
+    // return private object from public function
+    getDOMStrings: function () {
+      return DOMStrings;
+    },
+  };
+})();
 
 // budget app controller module, communicationg with budgetController as well as UIController by passing them as argument to it
 /**
@@ -31,9 +58,15 @@ var UIController = (function () {})();
  * @param UICtrl - refer to UIController
  */
 var controller = (function (budgetCtrl, UICtrl) {
+  // get DOM strings from UIController
+  var DOM = UICtrl.getDOMStrings();
+
   // shared method called in both event listener below
   var ctrlAddItem = function () {
-    // get field input data
+    // get field input data, called function from UIController
+    var input = UICtrl.getInput();
+    console.log(input);
+
     // add item to budget controller
     // add new item to UI
     // calculate budget
@@ -41,7 +74,9 @@ var controller = (function (budgetCtrl, UICtrl) {
   };
 
   // event listener for add button by using css selector
-  document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+  document
+    .querySelector(DOM.inputButton)
+    .addEventListener('click', ctrlAddItem);
 
   // keypress event not specific to any element but for overall document
   /**
