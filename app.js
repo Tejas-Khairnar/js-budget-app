@@ -46,6 +46,33 @@ var budgetController = (function () {
       inc: 0,
     },
   };
+
+  // public functions of budget controller
+  return {
+    addItem: function (type, desc, val) {
+      var newItem, ID;
+
+      // ID = last element ID + 1
+      if (data.allItems[type].length > 0) {
+        ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
+
+      // create new item base ob 'inc' or 'exp' type
+      if (type === 'exp') {
+        newItem = new Expense(ID, desc, val);
+      } else if (type === 'inc') {
+        newItem = new Income(ID, desc, val);
+      }
+
+      // add newItem in its respective arrays of our datastructure
+      data.allItems[type].push(newItem);
+
+      // return new item
+      return newItem;
+    },
+  };
 })();
 
 // independant user interface module, it is IIFE
@@ -108,10 +135,13 @@ var controller = (function (budgetCtrl, UICtrl) {
 
   // shared method called in both event listener below
   var ctrlAddItem = function () {
+    var input, newItem;
+
     // get field input data, called function from UIController
-    var input = UICtrl.getInput();
+    input = UICtrl.getInput();
 
     // add item to budget controller
+    newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     // add new item to UI
     // calculate budget
     // display budget on UI
