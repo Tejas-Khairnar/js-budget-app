@@ -134,6 +134,10 @@ var UIController = (function () {
     inputButton: '.add__btn',
     incomeContainer: '.income__list',
     expenseContainer: '.expenses__list',
+    budgetLabel: '.budget__value',
+    incomeLabel: '.budget__income--value',
+    expenseLabel: '.budget__expenses--value',
+    percentageLabel: '.budget__expenses--percentage',
   };
 
   // public function used in controller, always retured as object
@@ -212,6 +216,28 @@ var UIController = (function () {
       // after clear first field is focused
       fieldArr[0].focus();
     },
+
+    /**
+     * display budget on UI
+     * @param obj - budget obj from budget controller
+     */
+    displayBudget: function (obj) {
+      // display budget
+      document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+      // display total income
+      document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+      // display total expenses
+      document.querySelector(DOMStrings.expenseLabel).textContent =
+        obj.totalExp;
+
+      if (obj.percentage > 0) {
+        // display expenses percentage
+        document.querySelector(DOMStrings.percentageLabel).textContent =
+          obj.percentage + '%';
+      } else {
+        document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+      }
+    },
   };
 })();
 
@@ -252,6 +278,7 @@ var controller = (function (budgetCtrl, UICtrl) {
     var budget = budgetCtrl.getBudget();
 
     // display budget on UI
+    UICtrl.displayBudget(budget);
   };
 
   // shared method called in both event listener below
@@ -280,6 +307,17 @@ var controller = (function (budgetCtrl, UICtrl) {
   // public initialization function, always return as object outside IIFE
   return {
     init: function () {
+      console.log('Application started...');
+
+      // reset all budget on UI initially
+      UICtrl.displayBudget({
+        budget: 0,
+        totalInc: 0,
+        totalExp: 0,
+        percentage: -1,
+      });
+
+      // setup all initial event listeners
       setupEventListener();
     },
   };
