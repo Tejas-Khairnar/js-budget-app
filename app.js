@@ -95,11 +95,11 @@ var budgetController = (function () {
      * @param type - either inc or exp
      * @param id - unique id of selected item
      */
-    deleteItem = function(type, id) {
+    deleteItem: function (type, id) {
       var ids, index;
 
       // Array.map => return new array
-      ids = data.allItems[type].map(function(current, index, array) {
+      ids = data.allItems[type].map(function (current, index, array) {
         return current.id;
       });
 
@@ -108,7 +108,7 @@ var budgetController = (function () {
 
       // delete item on that specific index
       // Array.splice(position, number of items to delete, number of items to add)
-      if(index !== -1) {
+      if (index !== -1) {
         data.allItems[type].splice(index, 1);
       }
     },
@@ -215,6 +215,17 @@ var UIController = (function () {
       // insert HTMLinto the DOM
       // beforeend => insert as child of container
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+    },
+
+    /**
+     * delete item from DOM
+     * @param selectorId - id of target element
+     */
+    deleteListItem: function (selectorId) {
+      // select target element here
+      var el = document.getElementById(selectorId);
+      // we need to target parent element to remove its child element i.e target element
+      el.parentNode.removeChild(el);
     },
 
     // clearing input fields when click on add btn OR ENTER key
@@ -357,8 +368,10 @@ var controller = (function (budgetCtrl, UICtrl) {
       budgetCtrl.deleteItem(type, ID);
 
       // delete item from UI
+      UICtrl.deleteListItem(itemId);
 
       // update and show new budget
+      updateBudget();
     }
   };
 
