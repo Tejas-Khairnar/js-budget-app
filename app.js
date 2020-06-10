@@ -195,6 +195,7 @@ var UIController = (function () {
     percentageLabel: '.budget__expenses--percentage',
     container: '.container',
     expensePercentageLabel: '.item__percentage',
+    dateLable: '.budget__title--month',
   };
 
   /**
@@ -380,6 +381,40 @@ var UIController = (function () {
         }
       });
     },
+
+    // display current month using Date obj
+    displayMonth: function () {
+      var now, year, month;
+
+      // get current date as full date
+      now = new Date();
+
+      // get current month as its number
+      month = now.getMonth();
+
+      // get current month as its name
+      months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+
+      // get current year
+      year = now.getFullYear();
+
+      // display year in DOM
+      document.querySelector(DOMStrings.dateLable).textContent =
+        months[month] + ' ' + year;
+    },
   };
 })();
 
@@ -514,6 +549,9 @@ var controller = (function (budgetCtrl, UICtrl) {
 
       // setup all initial event listeners
       setupEventListener();
+
+      // display current month
+      UICtrl.displayMonth();
     },
   };
 })(budgetController, UIController);
