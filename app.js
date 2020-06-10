@@ -197,6 +197,44 @@ var UIController = (function () {
     expensePercentageLabel: '.item__percentage',
   };
 
+  /**
+   * Format number with 2 number after decimal and +/- before number and comma seperation for thousands
+   * @param number - which we need to format
+   * @param type - for inc use + and for exp use -
+   * eg => 2310.234 => 2,310.23
+   */
+  var formatNumber = function (number, type) {
+    var numSplit, intPart, decPart, sign;
+
+    // removes sign from number
+    number = Math.abs(number);
+
+    // Number.toFixed => how many number we want after decimal point and return string of it
+    number = number.toFixed(2);
+
+    // split above string into int part and decimal part
+    numSplit = number.split('.');
+    intPart = numSplit[0];
+    decPart = numSplit[1];
+
+    // add comma for thousands
+    if (intPart.length > 3) {
+      // String.substr(index, numberOfElement from index)
+      // input => 2310 then output => 2,310
+      intPart =
+        intPart.substr(0, intPart.length - 3) +
+        ',' +
+        intPart.substr(intPart.length - 3, intPart.length);
+    }
+
+    // for sign either + or - based on type
+    type === 'exp' ? (sign = '-') : (sign = '+');
+
+    // finally return formated string
+    // return sign + ' ' + intPart + decPart;
+    return (type === 'exp' ? '-' : '+') + ' ' + intPart + '.' + decPart;
+  };
+
   // public function used in controller, always retured as object
   return {
     getInput: function () {
@@ -242,7 +280,7 @@ var UIController = (function () {
       // replace placeholder text with actual data
       newHtml = html.replace('%id%', obj.id);
       newHtml = newHtml.replace('%description%', obj.description);
-      newHtml = newHtml.replace('%value%', obj.value);
+      newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
       // insert HTMLinto the DOM
       // beforeend => insert as child of container
@@ -290,13 +328,24 @@ var UIController = (function () {
      * @param obj - budget obj from budget controller
      */
     displayBudget: function (obj) {
+      var type;
+      // determine type from budget
+      obj.budget > 0 ? (type = 'inc') : (type = 'exp');
+
       // display budget
-      document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+      document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(
+        obj.budget,
+        type
+      );
       // display total income
-      document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+      document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(
+        obj.totalInc,
+        'inc'
+      );
       // display total expenses
-      document.querySelector(DOMStrings.expenseLabel).textContent =
-        obj.totalExp;
+      document.querySelector(
+        DOMStrings.expenseLabel
+      ).textContent = formatNumber(obj.totalExp, 'exp');
 
       if (obj.percentage > 0) {
         // display expenses percentage
