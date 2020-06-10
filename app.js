@@ -194,6 +194,7 @@ var UIController = (function () {
     expenseLabel: '.budget__expenses--value',
     percentageLabel: '.budget__expenses--percentage',
     container: '.container',
+    expensePercentageLabel: '.item__percentage',
   };
 
   // public function used in controller, always retured as object
@@ -305,6 +306,31 @@ var UIController = (function () {
         document.querySelector(DOMStrings.percentageLabel).textContent = '---';
       }
     },
+
+    /**
+     *
+     * @param percentagesArr - all percentages array from budget controller
+     */
+    displayPercentages: function (percentagesArr) {
+      var fields = document.querySelectorAll(DOMStrings.expensePercentageLabel);
+
+      // this callback function get called for each iteration when this function get called
+      var nodeListForEach = function (list, callback) {
+        for (var i = 0; i < list.length; i++) {
+          callback(list[i], i);
+        }
+      };
+
+      // custom forEach function for nodeList return from document.querySelectorAll
+      nodeListForEach(fields, function (current, index) {
+        if (percentagesArr[index] > 0) {
+          // change textContent on DOM for each iteration
+          current.textContent = percentagesArr[index] + '%';
+        } else {
+          current.textContent = '---';
+        }
+      });
+    },
   };
 })();
 
@@ -362,7 +388,7 @@ var controller = (function (budgetCtrl, UICtrl) {
     var percentages = budgetCtrl.getPercentages();
 
     // update the UI with new percentages
-    console.log(percentages);
+    UICtrl.displayPercentages(percentages);
   };
 
   // shared method called in both event listener below
